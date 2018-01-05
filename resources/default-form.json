@@ -1,0 +1,31 @@
+{
+  "dialog1": {
+    "title": "Hello World!",
+    "content": [
+	  "This dialog was created by Suteki",
+	  {
+		"type": "button",
+		"text": "Suteki",
+		"exec": "say Hello Suteki!",
+		"perm": "@player"
+	  },
+	  {
+		"type": "button",
+		"text": "Next >>",
+		"jump": "dialog2"
+	  }
+	]
+  },
+  "dialog2": {
+    "title": "Hello World!!!!",
+    "content": [
+      "Hello World",
+	  "This second dialog was created by Suteki",
+      {
+		"type": "button",
+        "text": "<< Previous",
+        "jump": "dialog1"
+      }
+    ]
+  }
+}
