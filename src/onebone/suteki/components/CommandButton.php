@@ -3,6 +3,7 @@
 namespace onebone\suteki\components;
 
 use onebone\suteki\Suteki;
+use pocketmine\command\ConsoleCommandSender;
 use pocketmine\Player;
 
 class CommandButton extends Button{
@@ -17,10 +18,16 @@ class CommandButton extends Button{
 
 	public function onClick(Player $player, $data){
 		if(strtoupper($this->perm) === "CONSOLE"){
-
+			$this->getPlugin()->getServer()->dispatchCommand(new ConsoleCommandSender(), $this->command);
+		}else{
+			$this->getPlugin()->getServer()->dispatchCommand($player, $this->command);
 		}
 	}
 
 	public function getFormData(): array{
+		return [
+			"type" => "button",
+			"text" => $this->getText()
+		];
 	}
 }

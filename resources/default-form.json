@@ -1,31 +1,36 @@
 {
-  "dialog1": {
+  "form1": {
+	"type": "form",
     "title": "Hello World!",
-    "content": [
-	  "This dialog was created by Suteki",
+    "content": "This form was created by Suteki",
+  	"buttons": [
 	  {
-		"type": "button",
 		"text": "Suteki",
 		"exec": "say Hello Suteki!",
 		"perm": "@player"
 	  },
 	  {
-		"type": "button",
 		"text": "Next >>",
 		"jump": "dialog2"
 	  }
 	]
   },
-  "dialog2": {
+  "form2": {
+	"type": "custom_form",
     "title": "Hello World!!!!",
     "content": [
       "Hello World",
-	  "This second dialog was created by Suteki",
+	  "This custom form was created by Suteki",
       {
-		"type": "button",
-        "text": "<< Previous",
+		"type": "toggle",
+        "text": "Do you like this server?",
         "jump": "dialog1"
-      }
+      },
+	  {
+		"type": "step_slider",
+		"text": "How could you rate the server?",
+		"steps": 5
+	  }
     ]
   }
 }

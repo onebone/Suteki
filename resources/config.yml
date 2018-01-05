@@ -1,2 +1,4 @@
 load:
 - "default-form.json"
+showOnEvent:
+  join: "form1"
