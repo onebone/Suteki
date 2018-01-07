@@ -23,11 +23,4 @@ class CommandButton extends Button{
 			$this->getPlugin()->getServer()->dispatchCommand($player, $this->command);
 		}
 	}
-
-	public function getFormData(): array{
-		return [
-			"type" => "button",
-			"text" => $this->getText()
-		];
-	}
 }

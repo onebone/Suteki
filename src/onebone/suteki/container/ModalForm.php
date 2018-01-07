@@ -4,6 +4,7 @@ namespace onebone\suteki\container;
 
 use onebone\suteki\components\Button;
 use onebone\suteki\Suteki;
+use pocketmine\Player;
 
 class ModalForm extends Container{
 	private $content;
@@ -26,13 +27,13 @@ class ModalForm extends Container{
 		return $this->no;
 	}
 
-	public function generateFormData(): string {
+	public function generateFormData(Player $player): string {
 		return json_encode([
 			'type' => 'modal',
-			'title' => $this->getTitle(),
-			'content' => $this->content,
-			'button1' => $this->yes->getText(),
-			'button2' => $this->no->getText()
+			'title' => $this->getPlugin()->replaceText($player, $this->getTitle()),
+			'content' => $this->getPlugin()->replaceText($player, $this->content),
+			'button1' => $this->getPlugin()->replaceText($player, $this->yes->getText()),
+			'button2' => $this->getPlugin()->replaceText($player, $this->no->getText())
 		]);
 	}
 }

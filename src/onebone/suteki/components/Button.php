@@ -19,4 +19,11 @@ abstract class Button extends Component{
 	}
 
 	abstract public function onClick(Player $player);
+
+	public function getFormData(Player $player): array{
+		return [
+			"type" => "button",
+			"text" => $this->getPlugin()->replaceText($player, $this->getText())
+		];
+	}
 }

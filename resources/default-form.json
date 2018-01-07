@@ -2,7 +2,7 @@
   "form1": {
 	"type": "form",
     "title": "Hello World!",
-    "content": "This form was created by Suteki",
+    "content": "Welcome {%username%}! This form was created by Suteki",
   	"buttons": [
 	  {
 		"text": "Suteki",

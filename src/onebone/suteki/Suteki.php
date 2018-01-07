@@ -18,12 +18,16 @@ use pocketmine\network\mcpe\protocol\ModalFormRequestPacket;
 use pocketmine\network\mcpe\protocol\ModalFormResponsePacket;
 use pocketmine\Player;
 use pocketmine\plugin\PluginBase;
+use pocketmine\Server;
 
 class Suteki extends PluginBase implements Listener{
 	/** @var CustomForm[] */
 	private $forms = [];
 
 	private $showEvents = [];
+
+	/** @var TextReplacer[] */
+	private $textReplacer = [];
 
 	const EVENT_JOIN = "JOIN";
 	const EVENT_INTERACT = "INTERACT";
@@ -52,9 +56,77 @@ class Suteki extends PluginBase implements Listener{
 			}
 		}
 
+		$this->initReplacers();
+
 		$this->getLogger()->info("There are ".count($this->forms)." forms loaded.");
 
 		$this->getServer()->getPluginManager()->registerEvents($this, $this);
+	}
+
+	private function initReplacers(){
+		$this->addTextReplacer('time', new class implements TextReplacer{
+			public function getText(Player $player): string {
+				return date('Y/m/d h:i:s');
+			}
+		});
+
+		$this->addTextReplacer('itemid', new class implements TextReplacer{
+			public function getText(Player $player): string {
+				return $player->getInventory()->getItemInHand()->getId();
+			}
+		});
+
+		$this->addTextReplacer('itemdamage', new class implements TextReplacer{
+			public function getText(Player $player): string {
+				return $player->getInventory()->getItemInHand()->getId();
+			}
+		});
+
+		$this->addTextReplacer('server', new class implements TextReplacer{
+			public function getText(Player $player): string {
+				return Server::getInstance()->getName();
+			}
+		});
+
+		$this->addTextReplacer('username', new class implements TextReplacer{
+			public function getText(Player $player): string {
+				return $player->getName();
+			}
+		});
+
+		$this->addTextReplacer('online', new class implements TextReplacer{
+			public function getText(Player $player): string {
+				return count(Server::getInstance()->getOnlinePlayers());
+			}
+		});
+
+		$this->addTextReplacer('maxonline', new class implements TextReplacer{
+			public function getText(Player $player): string {
+				return Server::getInstance()->getMaxPlayers();
+			}
+		});
+	}
+
+	public function addTextReplacer(string $id, TextReplacer $callback){
+		if(isset($this->textReplacer[$id])){
+			return false;
+		}
+
+		$this->textReplacer[$id] = $callback;
+		return true;
+	}
+
+	public function replaceText(Player $player, string $text): string {
+		preg_match_all('{%([0-9a-zA-Zㄱ-ㅎ가-힣_\-]+)%}', $text, $out);
+		foreach($out[1] as $res){
+			if(isset($this->textReplacer[$res])){
+				$str = $this->textReplacer[$res]->getText($player);
+
+				$text = str_replace("{%$res%}", $str, $text);
+			}
+		}
+
+		return $text;
 	}
 
 	public function sendForm(Player $player, string $formId): bool {
@@ -63,7 +135,7 @@ class Suteki extends PluginBase implements Listener{
 
 		$pk = new ModalFormRequestPacket();
 		$pk->formId = $form->getId();
-		$pk->formData = $form->generateFormData();
+		$pk->formData = $form->generateFormData($player);
 
 		$player->dataPacket($pk);
 		return true;

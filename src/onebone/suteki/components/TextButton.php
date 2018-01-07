@@ -6,11 +6,4 @@ use pocketmine\Player;
 
 class TextButton extends Button{
 	public function onClick(Player $player){}
-
-	public function getFormData(): array{
-		return [
-			"type" => "button",
-			"text" => $this->getText()
-		];
-	}
 }

@@ -3,6 +3,7 @@
 namespace onebone\suteki\components;
 
 use onebone\suteki\Suteki;
+use pocketmine\Player;
 
 class Label extends Component{
 	private $text;
@@ -13,10 +14,10 @@ class Label extends Component{
 		$this->text = $text;
 	}
 
-	public function getFormData(): array {
+	public function getFormData(Player $player): array {
 		return [
 			"type" => "label",
-			"text" => $this->text
+			"text" => $this->getPlugin()->replaceText($player, $this->text)
 		];
 	}
 }

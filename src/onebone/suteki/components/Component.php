@@ -3,6 +3,7 @@
 namespace onebone\suteki\components;
 
 use onebone\suteki\Suteki;
+use pocketmine\Player;
 
 abstract class Component{
 	private $plugin;
@@ -15,5 +16,5 @@ abstract class Component{
 		return $this->plugin;
 	}
 
-	abstract public function getFormData(): array;
+	abstract public function getFormData(Player $player): array;
 }

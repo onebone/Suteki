@@ -3,6 +3,7 @@
 namespace onebone\suteki\container;
 
 use onebone\suteki\Suteki;
+use pocketmine\Player;
 
 abstract class Container{
 	private $plugin;
@@ -27,5 +28,5 @@ abstract class Container{
 		return $this->title;
 	}
 
-	abstract public function generateFormData(): string;
+	abstract public function generateFormData(Player $player): string;
 }

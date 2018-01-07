@@ -17,11 +17,4 @@ class JumpButton extends Button{
 	public function onClick(Player $player){
 		$this->getPlugin()->sendForm($player, $this->container);
 	}
-
-	public function getFormData(): array{
-		return [
-			"type" => "button",
-			"text" => $this->getText()
-		];
-	}
 }

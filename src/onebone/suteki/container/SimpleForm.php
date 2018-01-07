@@ -4,6 +4,7 @@ namespace onebone\suteki\container;
 
 use onebone\suteki\components\Button;
 use onebone\suteki\Suteki;
+use pocketmine\Player;
 
 class SimpleForm extends Container{
 	/** @var Button[] */
@@ -29,16 +30,16 @@ class SimpleForm extends Container{
 		return $this->content;
 	}
 
-	public function generateFormData(): string{
+	public function generateFormData(Player $player): string{
 		$data = [
 			'type' => 'form',
-			'title' => $this->getTitle(),
-			'content' => $this->content,
+			'title' => $this->getPlugin()->replaceText($player, $this->getTitle()),
+			'content' => $this->getPlugin()->replaceText($player, $this->content),
 			'buttons' => []
 		];
 
 		foreach($this->buttons as $button){
-			$data['buttons'][] = $button->getFormData();
+			$data['buttons'][] = $button->getFormData($player);
 		}
 
 		return json_encode($data);

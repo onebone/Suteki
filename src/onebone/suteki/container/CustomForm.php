@@ -5,6 +5,7 @@ namespace onebone\suteki\container;
 use onebone\suteki\components\Component;
 use onebone\suteki\components\Label;
 use onebone\suteki\Suteki;
+use pocketmine\Player;
 
 class CustomForm extends Container{
 	/** @var Component[] */
@@ -31,15 +32,15 @@ class CustomForm extends Container{
 		return $this->components;
 	}
 
-	public function generateFormData(): string {
+	public function generateFormData(Player $player): string {
 		$data = [
 			'type' => 'custom_form',
-			'title' => $this->getTitle(),
+			'title' => $this->getPlugin()->replaceText($player, $this->getTitle()),
 			'content' => []
 		];
 
 		foreach($this->components as $component){
-			$data['content'][] = $component->getFormData();
+			$data['content'][] = $component->getFormData($player);
 		}
 
 		return json_encode($data);
