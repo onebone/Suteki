@@ -2,7 +2,6 @@
 
 namespace onebone\suteki;
 
-use onebone\suteki\components\Button;
 use onebone\suteki\components\CommandButton;
 use onebone\suteki\components\JumpButton;
 use onebone\suteki\components\Label;
