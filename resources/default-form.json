@@ -11,7 +11,7 @@
 	  },
 	  {
 		"text": "Next >>",
-		"jump": "dialog2"
+		"jump": "form2"
 	  }
 	]
   },
@@ -24,12 +24,14 @@
       {
 		"type": "toggle",
         "text": "Do you like this server?",
-        "jump": "dialog1"
+        "jump": "form1"
       },
 	  {
-		"type": "step_slider",
+		"type": "slider",
 		"text": "How could you rate the server?",
-		"steps": 5
+		"steps": 1,
+		"min": 1,
+		"max": 5
 	  }
     ]
   }

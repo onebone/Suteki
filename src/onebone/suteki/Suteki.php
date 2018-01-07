@@ -3,9 +3,13 @@
 namespace onebone\suteki;
 
 use onebone\suteki\components\CommandButton;
+use onebone\suteki\components\Input;
 use onebone\suteki\components\JumpButton;
 use onebone\suteki\components\Label;
+use onebone\suteki\components\Slider;
+use onebone\suteki\components\StepSlider;
 use onebone\suteki\components\TextButton;
+use onebone\suteki\components\Toggle;
 use onebone\suteki\container\CustomForm;
 use onebone\suteki\container\ModalForm;
 use onebone\suteki\container\SimpleForm;
@@ -213,10 +217,40 @@ class Suteki extends PluginBase implements Listener{
 								if(!isset($c['type'])){
 									$this->getLogger()->warning("There is component which did not specify its type in form '$id'");
 								}else{
-									$button = $this->parseButton($c);
-									if($button === null){
-										$this->getLogger()->warning("There is component which specified invalid type on form '$id'");
-										$this->getLogger()->warning("Got {$c['type']}, expected: BUTTON, LABEL");
+									switch(strtoupper($c['type'])){
+										case 'BUTTON':
+											$components[] = $this->parseButton($c);
+											break;
+										case 'TOGGLE':
+											$text = $c['text'] ?? '';
+											$default = (bool) ($c['default'] ?? true);
+
+											$components[] = new Toggle($this, $text, $default);
+											break;
+										case 'LABEL':
+											$text = $c['text'] ?? '';
+
+											$components[] = new Label($this, $text);
+											break;
+										case 'SLIDER':
+											$text = $c['text'] ?? '';
+											$min = (int) ($c['min'] ?? 1);
+											$max = (int) ($c['max'] ?? 5);
+											$step = (int) ($c['step'] ?? 1);
+											$default = (int) ($c['default'] ?? 1);
+
+											$components[] = new Slider($this, $text, $min, $max, $step, $default);
+											break;
+										case 'INPUT':
+											$text = $c['text'] ?? '';
+											$placeholder = $c['placeholder'] ?? '';
+											$default = $c['default'] ?? '';
+
+											$components[] = new Input($this, $text, $placeholder, $default);
+											break;
+										default:
+											$this->getLogger()->warning("There is component which specified invalid type on form '$id'");
+											$this->getLogger()->warning("Got {$c['type']}, expected: BUTTON, LABEL, TOGGLE, STEP_SLIDER");
 									}
 								}
 							}
