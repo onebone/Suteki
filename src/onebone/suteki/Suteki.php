@@ -4,8 +4,11 @@ namespace onebone\suteki;
 
 use onebone\suteki\components\Button;
 use onebone\suteki\components\CommandButton;
+use onebone\suteki\components\JumpButton;
 use onebone\suteki\components\Label;
+use onebone\suteki\components\TextButton;
 use onebone\suteki\container\CustomForm;
+use onebone\suteki\container\ModalForm;
 use onebone\suteki\container\SimpleForm;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerInteractEvent;
@@ -62,7 +65,6 @@ class Suteki extends PluginBase implements Listener{
 		$pk->formId = $form->getId();
 		$pk->formData = $form->generateFormData();
 
-		var_dump($pk->formData);
 		$player->dataPacket($pk);
 		return true;
 	}
@@ -92,6 +94,26 @@ class Suteki extends PluginBase implements Listener{
 
 		if($pk instanceof ModalFormResponsePacket){
 			$player = $event->getPlayer();
+
+			$data = json_decode($pk->formData, true);
+			foreach($this->forms as $form){
+				if($form->getId() === $pk->formId){
+					if($form instanceof SimpleForm){
+						$components = $form->getButtons();
+						if(isset($components[$data])){
+							$components[$data]->onClick($player);
+						}
+					}elseif($form instanceof CustomForm){
+						// TODO
+					}elseif($form instanceof ModalForm){
+						if($data){
+							$form->getYesButton()->onClick($player);
+						}else{
+							$form->getNoButton()->onClick($player);
+						}
+					}
+				}
+			}
 		}
 	}
 
@@ -148,8 +170,7 @@ class Suteki extends PluginBase implements Listener{
 					foreach($buttons as $c){
 						$button = $this->parseButton($c);
 						if($button === null){
-							$this->getLogger()->warning("There is component which specified invalid type on form '$id'");
-							$this->getLogger()->warning("Got {$c['type']}, expected: BUTTON, LABEL");
+							$this->getLogger()->warning("Button requires property 'text");
 							continue;
 						}
 
@@ -158,32 +179,38 @@ class Suteki extends PluginBase implements Listener{
 
 					$forms[$id] = new SimpleForm($this, $this->formId++, $title, $content, $btns);
 					break;
+				case 'MODAL':
+					$title = $f['title'] ?? '';
+					$content = $f['content'] ?? '';
+					$yes = $f['yes'] ?? ['text'=>''];
+					$no = $f['no'] ?? ['text'=>''];
+
+					$yb = $this->parseButton($yes);
+					$nb = $this->parseButton($no);
+
+					if($yb === null or $nb === null){
+						$this->getLogger()->warning("Button requires property 'text");
+						break;
+					}
+
+					$forms[$id] = new ModalForm($this, $this->formId++, $title, $content, $yb, $nb);
+					break;
 			}
 		}
 
 		return $forms;
 	}
 
-	private function parseButton($button): Button {
-		switch(strtoupper($button['type'])){
-			case "BUTTON":
-				$text = $button['text'] ?? '';
+	private function parseButton($button) {
+		$text = $button['text'] ?? '';
 
-				if(isset($button['exec'])){
-					$perm = $button['perm'] ?? '@player';
-					$components[] = new CommandButton($this, $text, $button['exec'], $perm);
-				}elseif(isset($button['jump'])){
-					// TODO
-				}
-				break;
-			case "LABEL":
-				$text = $button['text'] ?? '';
-				$components[] = new Label($this, $text);
-				break;
-			default:
-				return null;
+		if(isset($button['exec'])){
+			$perm = $button['perm'] ?? '@player';
+			return new CommandButton($this, $text, $button['exec'], $perm);
+		}elseif(isset($button['jump'])){
+			return new JumpButton($this, $text, $button['jump']);
 		}
 
-		return null;
+		return new TextButton($this, $text);
 	}
 }

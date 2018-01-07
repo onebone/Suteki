@@ -16,7 +16,7 @@ class CommandButton extends Button{
 		$this->perm = $perm;
 	}
 
-	public function onClick(Player $player, $data){
+	public function onClick(Player $player){
 		if(strtoupper($this->perm) === "CONSOLE"){
 			$this->getPlugin()->getServer()->dispatchCommand(new ConsoleCommandSender(), $this->command);
 		}else{

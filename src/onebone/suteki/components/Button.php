@@ -18,5 +18,5 @@ abstract class Button extends Component{
 		return $this->text;
 	}
 
-	abstract public function onClick(Player $player, $data);
+	abstract public function onClick(Player $player);
 }

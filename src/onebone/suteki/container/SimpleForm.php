@@ -21,13 +21,18 @@ class SimpleForm extends Container{
 		$this->buttons[] = $button;
 	}
 
+	public function getButtons(){
+		return $this->buttons;
+	}
+
 	public function getContent(): string {
 		return $this->content;
 	}
 
 	public function generateFormData(): string{
 		$data = [
-			'text' => $this->getTitle(),
+			'type' => 'form',
+			'title' => $this->getTitle(),
 			'content' => $this->content,
 			'buttons' => []
 		];
